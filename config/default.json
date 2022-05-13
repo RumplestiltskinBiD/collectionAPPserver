@@ -1,0 +1,6 @@
+{
+  "serverPort": 5000,
+  "dbUrl": "mongodb+srv://BiD:3746421@course.ovgfu.mongodb.net/course?retryWrites=true&w=majority",
+  "secretKey": "secretKey",
+  "itemPath": "C:\\Users\\Антон\\WebstormProjects\\cp2\\server\\Items"
+}
