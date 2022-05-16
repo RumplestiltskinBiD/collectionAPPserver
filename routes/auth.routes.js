@@ -88,7 +88,7 @@ router.get("/adminpage",
             const users = await User.find()
             res.json(users)
         } catch (e) {
-            console.log(e + " wtf")
+            console.log(e)
         }
     }
 )
