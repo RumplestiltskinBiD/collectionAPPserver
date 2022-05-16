@@ -7,7 +7,6 @@ const jwt = require("jsonwebtoken")
 const { check, validationResult } = require("express-validator")
 const router = new Router()
 const authMiddleware = require("../middleware/auth.middleware")
-const roleMiddleware = require("../middleware/role.middleware")
 const itemService = require('../services/itemService')
 const Item = require('../models/Item')
 
@@ -22,25 +21,17 @@ router.post("/registration",
         if (!errors.isEmpty()) {
             return res.status(400).json({message: "Incorrect request", errors})
         }
-
         const {email, password} = req.body
-
         const candidate = await User.findOne({email})
-
         if(candidate) {
             return res.status(400).json({message: `${email} already exist`})
         }
-
         const hashPassword = await bcrypt.hash(password, 8)
         const userRole = await Role.findOne({value: "USER"})
         const user = new User({email, password: hashPassword, roles: [userRole.value]})
-
         await user.save()
-
-        await itemService.createCollection(new Item({user: user.id, name: ''}))
-
+        await itemService.createCollection(req, new Item({user: user.id, name: ''}))
         return res.json({message: `User was created`})
-
     } catch (e) {
         res.send({message: "Error ", e})
     }
@@ -68,7 +59,6 @@ router.post("/login",
                     role: user.roles
                 }
             })
-
         } catch (e) {
             res.send({message: "Error ", e})
         }
@@ -87,8 +77,6 @@ router.get("/auth", authMiddleware,
                     collections: user.collections
                 }
             })
-
-
         } catch (e) {
             res.send({message: "Error ", e})
         }
@@ -98,8 +86,6 @@ router.get("/adminpage",
     async (req, res) => {
         try {
             const users = await User.find()
-
-            console.log(users)
             res.json(users)
         } catch (e) {
             console.log(e + " wtf")

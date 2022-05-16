@@ -3,8 +3,8 @@ const Item = require('../models/Item')
 const config = require('config')
 
 class ItemService {
-    createCollection(item) {
-        const itemPath = `${config.get('itemPath')}\\${item.user}\\${item.path}`
+    createCollection(req, item) {
+        const itemPath = this.getPath(req, item)
         return new Promise((resolve, reject) => {
             try {
                 if(!fs.existsSync(itemPath)) {
@@ -19,8 +19,8 @@ class ItemService {
         })
     }
 
-    deleteFile(item) {
-        const path = this.getPath(item)
+    deleteFile(req, item) {
+        const path = this.getPath(req, item)
         if(item.type === "collection") {
             fs.rmdirSync(path)
         } else {
@@ -28,8 +28,8 @@ class ItemService {
         }
     }
 
-    getPath(item) {
-        return config.get("itemPath") + '\\' + item.user + '\\' + item.path;
+    getPath(req, item) {
+        return req.itemPath + '\\' + item.user + '\\' + item.path;
     }
 }
 
